@@ -933,12 +933,13 @@ else:
 
 st.sidebar.markdown("---")
 test_size = st.sidebar.slider("Test size (%)", 10, 40, 20, step=5, key="sidebar_slider_source") / 100.0
-threshold = st.sidebar.slider("Decision Threshold (for underserved=1)", 0.0, 1.0, 0.50, 0.01)
+threshold = st.sidebar.slider("Decision Threshold (for underserved=1)", 0.0, 1.0, 0.50, 0.01, key="sidebar_slider_source2")
 
 class_weight_opt = st.sidebar.selectbox(
     "Class weighting",
     ["None", "balanced"],
     help="Try 'balanced' when underserved is rare.",
+    key="sidebar_selectbox_source"
 )
 class_weight = None if class_weight_opt == "None" else "balanced"
 
@@ -1309,6 +1310,7 @@ st.markdown("---")
 st.caption(
     "© 2025 — Capstone Dashboard. This template emphasizes transparency, fairness checks, threshold tuning, and exportable artifacts."
 )
+
 
 
 
