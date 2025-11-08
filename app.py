@@ -599,7 +599,7 @@ with tab_map:
             latitude="lat",
             longitude="lon",
             size=20,
-            color=None,
+            color=Blue,
         )
     else:
         st.info("Provide latitude/longitude columns (or use synthetic demo) to view a map.")
@@ -1311,6 +1311,7 @@ st.markdown("---")
 st.caption(
     "© 2025 — Capstone Dashboard. This template emphasizes transparency, fairness checks, threshold tuning, and exportable artifacts."
 )
+
 
 
 
