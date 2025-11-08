@@ -597,9 +597,7 @@ with tab_map:
         st.map(
             map_df.rename(columns={target_col: "is_underserved"}),
             latitude="lat",
-            longitude="lon",
-            size=20,
-            color=Blue,
+            longitude="lon"
         )
     else:
         st.info("Provide latitude/longitude columns (or use synthetic demo) to view a map.")
@@ -1311,6 +1309,7 @@ st.markdown("---")
 st.caption(
     "© 2025 — Capstone Dashboard. This template emphasizes transparency, fairness checks, threshold tuning, and exportable artifacts."
 )
+
 
 
 
