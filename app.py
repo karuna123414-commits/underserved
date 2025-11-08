@@ -2,6 +2,7 @@ import json
 from typing import List, Tuple
 
 import numpy as np
+import matplotlib as plt
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -1311,6 +1312,7 @@ st.markdown("---")
 st.caption(
     "© 2025 — Capstone Dashboard. This template emphasizes transparency, fairness checks, threshold tuning, and exportable artifacts."
 )
+
 
 
 
