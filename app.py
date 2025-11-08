@@ -953,7 +953,7 @@ n_estimators = st.sidebar.slider("n_estimators", 100, 800, 300, step=50, key="si
 max_depth = st.sidebar.select_slider("max_depth", options=[None, 5, 10, 15, 20, 30], value=None, key="siderbar_slider_source4")
 
 st.sidebar.markdown("---")
-k_clusters = st.sidebar.slider("KMeans: number of clusters (k)", 2, 8, 3, step=1)
+k_clusters = st.sidebar.slider("KMeans: number of clusters (k)", 2, 8, 3, step=1, key="sidebar_slider_source5")
 
 
 # -------------------------
@@ -1311,6 +1311,7 @@ st.markdown("---")
 st.caption(
     "© 2025 — Capstone Dashboard. This template emphasizes transparency, fairness checks, threshold tuning, and exportable artifacts."
 )
+
 
 
 
