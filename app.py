@@ -925,7 +925,7 @@ data_source = st.sidebar.radio(
 )
 
 if data_source == "Upload CSV":
-    f = st.sidebar.file_uploader("Upload CSV (must contain target 'underserved')", type=["csv"])
+    f = st.sidebar.file_uploader("Upload CSV (must contain target 'underserved')", type=["csv"], key="sidebar_csv_uploader")
     df_raw = pd.read_csv(f) if f is not None else None
 else:
     n = st.sidebar.slider("Synthetic sample size (counties)", 100, 2000, 200, step=50)
@@ -1309,6 +1309,7 @@ st.markdown("---")
 st.caption(
     "© 2025 — Capstone Dashboard. This template emphasizes transparency, fairness checks, threshold tuning, and exportable artifacts."
 )
+
 
 
 
