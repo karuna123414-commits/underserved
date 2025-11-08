@@ -594,8 +594,8 @@ with tab_map:
     ):
         map_df = df[[lat_col, lon_col, target_col]].copy()
         map_df = map_df.rename(columns={
-            latitude=="lat",
-            longitude=="lon",
+            lat_col="lat",
+            lon_col="lon",
             target_col: "is_underserved"}
         )
 
@@ -1318,6 +1318,7 @@ st.markdown("---")
 st.caption(
     "© 2025 — Capstone Dashboard. This template emphasizes transparency, fairness checks, threshold tuning, and exportable artifacts."
 )
+
 
 
 
