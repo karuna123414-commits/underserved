@@ -608,7 +608,7 @@ with tab_map:
             longitude="lon"
         )
  
-    else:
+    else
         st.info("Provide latitude/longitude columns (or use synthetic demo) to view a map.")
 
 with tab_export:
@@ -1318,6 +1318,7 @@ st.markdown("---")
 st.caption(
     "© 2025 — Capstone Dashboard. This template emphasizes transparency, fairness checks, threshold tuning, and exportable artifacts."
 )
+
 
 
 
