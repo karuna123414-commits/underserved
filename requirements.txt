@@ -7,3 +7,4 @@ shap
 imbalanced-learn
 fairlearn
 matplotlib
+pydeck
