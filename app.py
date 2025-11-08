@@ -593,22 +593,24 @@ with tab_map:
         and lon_col in df.columns
     ):
         map_df = df[[lat_col, lon_col, target_col]].copy()
+        
         map_df = map_df.rename(columns={
             lat_col:"lat",
             lon_col:"lon",
-            target_col: "is_underserved"}
-        )
+            target_col: "is_underserved"
+        })
 
     map_df["lat"] = pd.to_numeric(map_df["lat"], errors="coerce")
     map_df["lon"] = pd.to_numeric(map_df["lon"], errors="coerce")
     map_df = map_df.dropna(subset=["lat", "lon"]) 
+    
     st.map(
             map_df,
             latitude="lat",
             longitude="lon"
         )
  
-    else
+else:
         st.info("Provide latitude/longitude columns (or use synthetic demo) to view a map.")
 
 with tab_export:
@@ -1318,6 +1320,7 @@ st.markdown("---")
 st.caption(
     "© 2025 — Capstone Dashboard. This template emphasizes transparency, fairness checks, threshold tuning, and exportable artifacts."
 )
+
 
 
 
