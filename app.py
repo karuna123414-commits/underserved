@@ -944,7 +944,8 @@ class_weight_opt = st.sidebar.selectbox(
 class_weight = None if class_weight_opt == "None" else "balanced"
 
 smote_enabled = st.sidebar.checkbox(
-    "Use SMOTE on training set (if minority is rare)", value=False, help="Requires imbalanced-learn"
+    "Use SMOTE on training set (if minority is rare)", value=False, help="Requires imbalanced-learn",
+    key="sidebar_checkbox_source"
 )
 
 st.sidebar.markdown("### Random Forest")
@@ -1310,6 +1311,7 @@ st.markdown("---")
 st.caption(
     "© 2025 — Capstone Dashboard. This template emphasizes transparency, fairness checks, threshold tuning, and exportable artifacts."
 )
+
 
 
 
