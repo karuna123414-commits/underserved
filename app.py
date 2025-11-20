@@ -448,31 +448,46 @@ with tab_model:
     st.markdown("### Explainability (SHAP)")
     if SHAP_AVAILABLE:
         try:
-            # Ensure training data has column names
+            # Convert training and test to DataFrame with column names
             X_tr_shap = pd.DataFrame(X_tr_final, columns=feat_cols)
-
-            # Ensure test data has column names and same order
             X_te_shap = pd.DataFrame(X_test_scaled, columns=feat_cols)
 
             # Use TreeExplainer for RandomForest
             explainer = shap.TreeExplainer(rf)
             shap_values = explainer.shap_values(X_te_shap)
 
-            # --- SHAP Summary Bar Plot ---
+            # ----- Summary BAR PLOT -----
             st.write("**Summary (bar)** — average absolute impact per feature:")
-            fig_bar = shap.plots.bar(shap_values[1], max_display=len(feat_cols), show=False)
+
+            shap_exp = shap.Explanation(
+                values=shap_values[1],
+                base_values=explainer.expected_value[1],
+                data=X_te_shap.values,
+                feature_names=feat_cols
+            )
+
+            fig_bar = shap.plots.bar(shap_exp, show=False)
             st.pyplot(fig_bar, use_container_width=True)
 
-            # --- SHAP Force Plot ---
+            # ----- FORCE PLOT -----
             st.write("**Single County Force Plot** — how features push prediction for one example:")
+
             row_idx = 0
-            force_fig = shap.force_plot(
-                explainer.expected_value[1],
-                shap_values[1][row_idx],
-                X_te_shap.iloc[row_idx],
+            force_exp = shap.Explanation(
+                values=shap_values[1][row_idx],
+                base_values=explainer.expected_value[1],
+                data=X_te_shap.iloc[row_idx].values,
+                feature_names=feat_cols,
+            )
+
+            force_fig = shap.plots.force(
+                force_exp.base_values,
+                force_exp.values,
+                feature_names=feat_cols,
                 matplotlib=True,
                 show=False,
             )
+
             st.pyplot(force_fig, use_container_width=True)
 
         except Exception as e:
@@ -1323,6 +1338,7 @@ st.markdown("---")
 st.caption(
     "© 2025 — Capstone Dashboard. This template emphasizes transparency, fairness checks, threshold tuning, and exportable artifacts."
 )
+
 
 
 
