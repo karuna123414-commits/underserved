@@ -445,36 +445,37 @@ with tab_model:
     st.plotly_chart(fig_cm, use_container_width=True)
 
     # SHAP explainability
+        # SHAP explainability
     st.markdown("### Explainability (SHAP)")
     if SHAP_AVAILABLE:
         try:
-            explainer = shap.Explainer(rf, X_tr_final, feature_names=feat_cols)
-            shap_values = explainer(X_test_scaled, check_additivity=False)
+            # Ensure training data has column names
+            X_tr_shap = pd.DataFrame(X_tr_final, columns=feat_cols)
 
+            # Ensure test data has column names and same order
+            X_te_shap = pd.DataFrame(X_test_scaled, columns=feat_cols)
+
+            # Use TreeExplainer for RandomForest
+            explainer = shap.TreeExplainer(rf)
+            shap_values = explainer.shap_values(X_te_shap)
+
+            # --- SHAP Summary Bar Plot ---
             st.write("**Summary (bar)** — average absolute impact per feature:")
-            fig_bar = shap.plots.bar(shap_values, show=False)
+            fig_bar = shap.plots.bar(shap_values[1], max_display=len(feat_cols), show=False)
             st.pyplot(fig_bar, use_container_width=True)
 
+            # --- SHAP Force Plot ---
             st.write("**Single County Force Plot** — how features push prediction for one example:")
             row_idx = 0
-            exp_row = explainer(X_test_scaled.iloc[[row_idx]], check_additivity=False)
-            try:
-                fig_force = shap.plots.force(
-                    exp_row[0].base_values,
-                    exp_row[0].values,
-                    X_test_scaled.iloc[[row_idx]],
-                    matplotlib=True,
-                    show=False,
-                )
-            except Exception:
-                fig_force = shap.plots.force(
-                    exp_row.base_values[0],
-                    exp_row.values[0],
-                    X_test_scaled.iloc[[row_idx]],
-                    matplotlib=True,
-                    show=False,
-                )
-            st.pyplot(fig_force, use_container_width=True)
+            force_fig = shap.force_plot(
+                explainer.expected_value[1],
+                shap_values[1][row_idx],
+                X_te_shap.iloc[row_idx],
+                matplotlib=True,
+                show=False,
+            )
+            st.pyplot(force_fig, use_container_width=True)
+
         except Exception as e:
             st.warning(f"SHAP explanation failed: {e}")
     else:
@@ -1323,6 +1324,7 @@ st.markdown("---")
 st.caption(
     "© 2025 — Capstone Dashboard. This template emphasizes transparency, fairness checks, threshold tuning, and exportable artifacts."
 )
+
 
 
 
