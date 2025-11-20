@@ -445,19 +445,30 @@ with tab_model:
     st.plotly_chart(fig_cm, use_container_width=True)
 
     # SHAP explainability
-        # SHAP explainability
     st.markdown("### Explainability (SHAP)")
     if SHAP_AVAILABLE:
         try:
-            # Convert arrays to DataFrames so SHAP sees column names
-            X_tr_shap = pd.DataFrame(X_tr_final, columns=feat_cols)
-            X_te_shap = pd.DataFrame(X_test_scaled, columns=feat_cols)
+            import matplotlib.pyplot as plt
 
-            # Use TreeExplainer for RandomForest
+            # -------------------------
+            # 1. FORCE CONSISTENT FEATURE ORDER + SHAP DATAFRAME
+            # -------------------------
+            X_tr_shap = pd.DataFrame(X_tr_final, columns=feat_cols)
+            X_te_shap = pd.DataFrame(X_test_scaled[feat_cols], columns=feat_cols)
+
+            # -------------------------
+            # 2. BUILD TREE EXPLAINER
+            # -------------------------
             explainer = shap.TreeExplainer(rf)
             shap_values = explainer.shap_values(X_te_shap)
 
-            # ======== SHAP Summary Bar Plot ========
+            # shap_values[1] must match number of columns
+            assert shap_values[1].shape[1] == len(feat_cols), \
+                f"SHAP mismatch: shap_values has {shap_values[1].shape[1]} columns, but feat_cols has {len(feat_cols)}."
+
+            # -------------------------
+            # 3. SUMMARY BAR PLOT
+            # -------------------------
             st.write("**Summary (bar)** — average absolute impact per feature:")
 
             shap_exp = shap.Explanation(
@@ -467,20 +478,18 @@ with tab_model:
                 feature_names=feat_cols
             )
 
-            # Make plot
             ax = shap.plots.bar(shap_exp, show=False)
-
-            # Convert Axes → Figure so Streamlit can render it
-            import matplotlib.pyplot as plt
             fig = plt.gcf()
             st.pyplot(fig, use_container_width=True)
             plt.clf()
 
-            # ======== SHAP Force Plot ========
+            # -------------------------
+            # 4. FORCE PLOT FOR ONE ROW
+            # -------------------------
             st.write("**Single County Force Plot** — how features push prediction for one example:")
 
             row_idx = 0
-            single_exp = shap.Explanation(
+            force_exp = shap.Explanation(
                 values=shap_values[1][row_idx],
                 base_values=explainer.expected_value[1],
                 data=X_te_shap.iloc[row_idx].values,
@@ -488,25 +497,23 @@ with tab_model:
             )
 
             force_fig = shap.force_plot(
-                single_exp.base_values,
-                single_exp.values,
-                single_exp.data,
+                force_exp.base_values,
+                force_exp.values,
+                force_exp.data,
                 feature_names=feat_cols,
                 matplotlib=True,
                 show=False
             )
 
-            # Render force plot figure
             fig2 = plt.gcf()
             st.pyplot(fig2, use_container_width=True)
             plt.clf()
 
         except Exception as e:
             st.warning(f"SHAP explanation failed: {e}")
-
     else:
         st.info("SHAP not installed. Add `shap` to requirements to enable.")
-
+        
 with tab_thresholds:
     st.markdown("### Decision Threshold Tuning")
     fpr, tpr, _ = roc_curve(y_test, y_prob)
@@ -1350,6 +1357,7 @@ st.markdown("---")
 st.caption(
     "© 2025 — Capstone Dashboard. This template emphasizes transparency, fairness checks, threshold tuning, and exportable artifacts."
 )
+
 
 
 
