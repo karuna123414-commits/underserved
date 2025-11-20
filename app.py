@@ -445,7 +445,6 @@ with tab_model:
     st.plotly_chart(fig_cm, use_container_width=True)
 
     # SHAP explainability
-        # SHAP explainability
     st.markdown("### Explainability (SHAP)")
     if SHAP_AVAILABLE:
         try:
@@ -1324,6 +1323,7 @@ st.markdown("---")
 st.caption(
     "© 2025 — Capstone Dashboard. This template emphasizes transparency, fairness checks, threshold tuning, and exportable artifacts."
 )
+
 
 
 
