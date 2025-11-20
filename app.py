@@ -445,10 +445,11 @@ with tab_model:
     st.plotly_chart(fig_cm, use_container_width=True)
 
     # SHAP explainability
+        # SHAP explainability
     st.markdown("### Explainability (SHAP)")
     if SHAP_AVAILABLE:
         try:
-            # Convert training and test to DataFrame with column names
+            # Convert arrays to DataFrames so SHAP sees column names
             X_tr_shap = pd.DataFrame(X_tr_final, columns=feat_cols)
             X_te_shap = pd.DataFrame(X_test_scaled, columns=feat_cols)
 
@@ -456,7 +457,7 @@ with tab_model:
             explainer = shap.TreeExplainer(rf)
             shap_values = explainer.shap_values(X_te_shap)
 
-            # ----- Summary BAR PLOT -----
+            # ======== SHAP Summary Bar Plot ========
             st.write("**Summary (bar)** — average absolute impact per feature:")
 
             shap_exp = shap.Explanation(
@@ -466,32 +467,43 @@ with tab_model:
                 feature_names=feat_cols
             )
 
-            fig_bar = shap.plots.bar(shap_exp, show=False)
-            st.pyplot(fig_bar, use_container_width=True)
+            # Make plot
+            ax = shap.plots.bar(shap_exp, show=False)
 
-            # ----- FORCE PLOT -----
+            # Convert Axes → Figure so Streamlit can render it
+            import matplotlib.pyplot as plt
+            fig = plt.gcf()
+            st.pyplot(fig, use_container_width=True)
+            plt.clf()
+
+            # ======== SHAP Force Plot ========
             st.write("**Single County Force Plot** — how features push prediction for one example:")
 
             row_idx = 0
-            force_exp = shap.Explanation(
+            single_exp = shap.Explanation(
                 values=shap_values[1][row_idx],
                 base_values=explainer.expected_value[1],
                 data=X_te_shap.iloc[row_idx].values,
-                feature_names=feat_cols,
+                feature_names=feat_cols
             )
 
-            force_fig = shap.plots.force(
-                force_exp.base_values,
-                force_exp.values,
+            force_fig = shap.force_plot(
+                single_exp.base_values,
+                single_exp.values,
+                single_exp.data,
                 feature_names=feat_cols,
                 matplotlib=True,
-                show=False,
+                show=False
             )
 
-            st.pyplot(force_fig, use_container_width=True)
+            # Render force plot figure
+            fig2 = plt.gcf()
+            st.pyplot(fig2, use_container_width=True)
+            plt.clf()
 
         except Exception as e:
             st.warning(f"SHAP explanation failed: {e}")
+
     else:
         st.info("SHAP not installed. Add `shap` to requirements to enable.")
 
@@ -1338,6 +1350,7 @@ st.markdown("---")
 st.caption(
     "© 2025 — Capstone Dashboard. This template emphasizes transparency, fairness checks, threshold tuning, and exportable artifacts."
 )
+
 
 
 
